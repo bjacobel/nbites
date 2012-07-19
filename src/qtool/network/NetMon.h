@@ -12,8 +12,11 @@
 #include <QWidget>
 #include <QLabel>
 #include <QtGui>
+#include <QtNetwork/QUdpSocket>
+#include <vector>
 
 #include "data/DataManager.h"
+#include "SocketReader.h"
 
 namespace qtool {
 namespace network {
@@ -23,10 +26,12 @@ class NetMon : public QMainWindow {
 
 public:
 	NetMon(data::DataManager::ptr dataManager);
-	~NetMon();
+	~NetMon(){}
 
 private:
 	data::DataManager::ptr dataManager;
+	network::SocketReader* onlineBots;
+
 };
 
 }

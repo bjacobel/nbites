@@ -13,9 +13,15 @@ add_definitions(${QT_DEFINITIONS})
 
 ########### Sources
 
-set( network_srcs NetMon.cpp )
+set( network_srcs 
+	NetMon.cpp
+	SocketReader.cpp
+   )
 
-set( network_headers NetMon.h )
+set( network_headers 
+	NetMon.h 
+	SocketReader.cpp
+   )
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 

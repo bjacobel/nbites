@@ -6,15 +6,15 @@
 namespace qtool {
 namespace network {
 
+using namespace data;
 using namespace man::memory;
 
-NetMon::NetMon(DataManager::ptr dataManager):
+NetMon::NetMon(DataManager::ptr dataManager) :
 	dataManager(dataManager) {
-
+	
 }
 
-NetMon::~NetMon(){
-}
+
 
 }
 }
