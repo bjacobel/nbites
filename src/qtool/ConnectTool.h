@@ -19,6 +19,7 @@
 #include "viewer/ParticleViewer.h"
 #include "remote/RobotSelect.h"
 #include "overseer/OverseerClient.h"
+#include "network/NetMon.h"
 
 namespace qtool {
 
@@ -35,6 +36,7 @@ private:
     viewer::MemoryViewer* memoryViewer;
     viewer::ParticleViewer* particleViewer;
     overseer::OverseerClient* overseerClient;
+	network::NetMon* netmon;
 };
 
 }

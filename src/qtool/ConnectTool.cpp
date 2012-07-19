@@ -11,6 +11,7 @@ using viewer::ParticleViewer;
 using viewer::RobotField;
 using viewer::FieldViewer;
 using overseer::OverseerClient;
+using network::NetMon;
 
 ConnectTool::ConnectTool() : EmptyQTool("Robot Connection Tool"),
                              dataLoader(new DataLoader(dataManager)),
@@ -25,6 +26,7 @@ ConnectTool::ConnectTool() : EmptyQTool("Robot Connection Tool"),
     toolTabs->addTab(particleViewer, tr("Particle Viewer"));
     toolTabs->addTab(new FieldViewer(dataManager, this), tr("Field Viewer"));
     toolTabs->addTab(overseerClient, tr("Overseer"));
+	toolTabs->addTab(new NetMon(dataManager), tr("Net Utils"));
 
 	scrollArea->setWidget(toolTabs);
 	scrollArea->resize(toolTabs->size());

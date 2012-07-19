@@ -72,6 +72,7 @@ add_subdirectory( viewer )
 add_subdirectory( offline )
 add_subdirectory( remote )
 add_subdirectory( overseer )
+add_subdirectory( network )
 
 ######### The main QTool executable
 
@@ -106,5 +107,6 @@ target_link_libraries(
   viewer
   remote
   overseer_client
+  network
   ${QT_LIBRARIES}
   )
