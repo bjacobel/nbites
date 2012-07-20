@@ -2,13 +2,13 @@
 #include "BMPImage.h"
 #include <vector>
 #include "image/Color.h"
-#include "viewer/BotLocs.h"
+#include "network/SocketReader.h"
 #include <cmath>
 
 namespace qtool {
 namespace image {
 
-using namespace viewer;
+using namespace network;
 
 QColor ball = QColor::fromRgb(Color_RGB[Orange]);
 QColor bluePlayer = QColor::fromRgb(Color_RGB[Navy]);
@@ -28,7 +28,7 @@ int ballDrawSize = 5;
 PaintBots::PaintBots(float scale, QObject *parent)
     : PaintFieldOverlay(scale, parent)
 {
-    locs = new BotLocs(this);
+	locs = new SocketReader(this);
 }
 
 

@@ -25,9 +25,8 @@ set( viewer_srcs MemoryViewer.cpp
                  FieldViewer.cpp
                  EKFDataViewer.cpp
                  CollapsibleImageViewer.cpp
-		 		 BotLocs.cpp
-		 		 RobotField.cpp
-		 		 ParticleViewer.cpp
+		 RobotField.cpp
+		 ParticleViewer.cpp
                  )
 
 set( viewer_headers MemoryViewer.h
@@ -39,9 +38,8 @@ set( viewer_headers MemoryViewer.h
                     FieldViewer.h
                     EKFDataViewer.h
                     CollapsibleImageViewer.h
-		    		BotLocs.h
-		    		RobotField.h
-		    		ParticleViewer.h
+		    RobotField.h
+		    ParticleViewer.h
                     )
 
 
@@ -76,6 +74,7 @@ target_link_libraries(
   treemodel
   image
   memory
+  network
   ${QT_LIBRARIES}
   )
 

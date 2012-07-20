@@ -17,7 +17,7 @@
 #include "data/DataManager.h"
 #include "image/PaintFieldObjects.h"
 #include "man/include/FieldConstants.h"
-#include "viewer/BotLocs.h"
+#include "network/SocketReader.h"
 
 namespace qtool {
 namespace image {
@@ -29,8 +29,8 @@ public:
     PaintBots(float scale = 1.0f, QObject *parent = 0);
     ~PaintBots(){}
 
-    //this should be moved somewhere else and not be public
-    viewer::BotLocs* locs;
+	//probably still shouldn't be public
+	network::SocketReader* locs;
 
 protected:
     virtual void buildBitmap();

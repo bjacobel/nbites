@@ -20,7 +20,7 @@ set( network_srcs
 
 set( network_headers 
 	NetMon.h 
-	SocketReader.cpp
+	SocketReader.h
    )
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
