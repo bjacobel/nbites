@@ -31,7 +31,6 @@ public:
 private:
 	data::DataManager::ptr dataManager;
 	network::SocketReader* onlineBots;
-
 };
 
 }

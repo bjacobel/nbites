@@ -31,7 +31,8 @@ FieldViewer::FieldViewer(DataManager::ptr dataManager, QWidget* parent):
     overlayImage = new OverlayedImage(fieldImage, bot_locs, this);
     fieldView = new BMPImageViewer(overlayImage, this);
 
-    connect(bot_locs->locs, SIGNAL(newRobotLocation()), fieldView, SLOT(updateView()));
+    connect(bot_locs->locs, SIGNAL(addedNewRobot()), fieldView, SLOT(updateView()));
+	connect(bot_locs->locs, SIGNAL(replacedRobot()), fieldView, SLOT(updateView()));
 
     field = new QHBoxLayout();
     field->addWidget(fieldView);

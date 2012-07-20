@@ -52,59 +52,64 @@ void SocketReader::readSocket(){
 			newBot.teamColor = head->color;
 			newBot.playerNum = head->player;
 
-            //kill the previous instance of this robot in the array
-            for(int i = 0; i < botPositions.size(); i++){
-                if(botPositions[i].address == newBot.address){
-                    botPositions.erase(botPositions.begin() + i);
+            robotExistsAlready = 0;
+			for(int i = 0; i < connectedBots.size(); i++){
+                //if this robot is already in the array, delete the instance of it that's older
+				if(connectedBots[i].address == newBot.address){
+                    connectedBots.erase(connectedBots.begin() + i);
+					emit replacedRobot();
+					robotExistsAlready = 1;
                 }
             }
-            botPositions.push_back(newBot);
+			//if the robot wasn't a duplicate, add it but emit a different signal
+			if(!robotExistsAlready)
+				emit addedNewRobot();
+            connectedBots.push_back(newBot);
         }
-        emit newRobotLocation();
     }
 }
 
 int SocketReader::getX(int i){
-    return botPositions[i].xPos;
+    return connectedBots[i].xPos;
 }
 int SocketReader::getY(int i){
-    return botPositions[i].yPos;
+    return connectedBots[i].yPos;
 }
 int SocketReader::getHeading(int i){
-    return botPositions[i].heading;
+    return connectedBots[i].heading;
 }
 int SocketReader::getXUncert(int i){
-    return botPositions[i].xUncert;
+    return connectedBots[i].xUncert;
 }
 int SocketReader::getYUncert(int i){
-    return botPositions[i].yUncert;
+    return connectedBots[i].yUncert;
 }
 int SocketReader::getheadUncert(int i){
-    return botPositions[i].headingUncert;
+    return connectedBots[i].headingUncert;
 }
 int SocketReader::getBallX(int i){
-    return botPositions[i].xBall;
+    return connectedBots[i].xBall;
 }
 int SocketReader::getBallY(int i){
-    return botPositions[i].yBall;
+    return connectedBots[i].yBall;
 }
 int SocketReader::getBallXUncert(int i){
-    return botPositions[i].xBallUncert;
+    return connectedBots[i].xBallUncert;
 }
 int SocketReader::getBallYUncert(int i){
-    return botPositions[i].yBallUncert;
+    return connectedBots[i].yBallUncert;
 }
 int SocketReader::getTeamNum(int i){
-	return botPositions[i].teamNum;
+	return connectedBots[i].teamNum;
 }
 int SocketReader::getTeamColor(int i){//0=blue, 1=red
-	return botPositions[i].teamColor;
+	return connectedBots[i].teamColor;
 }
 int SocketReader::getPlayerNum(int i){
-	return botPositions[i].playerNum;
+	return connectedBots[i].playerNum;
 }
 int SocketReader::getSize(){
-	return botPositions.size();
+	return connectedBots.size();
 }
 SocketReader::Bot SocketReader::findRobot(QString s){
 }

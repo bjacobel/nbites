@@ -68,11 +68,13 @@ public slots:
     void readSocket();
 
 signals:
-    void newRobotLocation();
+    void addedNewRobot();
+	void replacedRobot();
 
 private:
-    std::vector<Bot> botPositions;
+    std::vector<Bot> connectedBots;
     QUdpSocket udpSocket;
+	bool robotExistsAlready;
 };
 }
 }
