@@ -36,13 +36,12 @@ private:
 	QFont bold40;
 	int frameWidth;
 
-	void display();
 	void setupRobotView(int, int);
 	void testBots();
 
 private slots:
-	void updateRobot();
-	void addRobot();
+	void updateDisplay();
+
 };
 
 }

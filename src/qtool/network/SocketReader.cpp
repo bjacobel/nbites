@@ -111,6 +111,9 @@ int SocketReader::getPlayerNum(int i){
 QString SocketReader::getName(int i){
 	return connectedBots[i].name;
 }
+QHostAddress SocketReader::getHostAddress(int i){
+	return connectedBots[i].address;
+}
 int SocketReader::getSize(){
 	return connectedBots.size();
 }

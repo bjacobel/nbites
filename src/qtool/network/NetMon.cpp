@@ -13,47 +13,51 @@ NetMon::NetMon(DataManager::ptr dataManager, QWidget* parent) :
 	QWidget(parent), dataManager(dataManager) {
 
 	mainLayout = new QHBoxLayout(this);
+	mainLayout->setSpacing(10);
 	socket = new SocketReader();
 	//socket->startListening();
 
 	frameWidth = parent->size().width();
 	bold40.setPointSize(40);
-	bold40.setBold(true);
+	//bold40.setBold(true);
+	bold40.setWeight(100);
 
-	connect(socket, SIGNAL(replacedRobot()), this, SLOT(updateRobot()));
-	connect(socket, SIGNAL(addedNewRobot()), this, SLOT(addRobot()));
+	//connect(socket, SIGNAL(replacedRobot()), this, SLOT(updateRobot()));
+	//connect(socket, SIGNAL(addedNewRobot()), this, SLOT(addRobot()));
 
 	testBots();
-	display();
+	updateDisplay();
 }
 
-void NetMon::updateRobot(){
-	display();
-}
-
-void NetMon::addRobot(){
-	display();
-}
-
-void NetMon::display(){
+void NetMon::updateDisplay(){
 	for(int i = 0; i < socket->getSize(); i++){
-		setupRobotView(i, i);
+		QVBoxLayout* robotLayout = new QVBoxLayout;
+		robotLayout->setContentsMargins(10, 10, 10, 10);
+
+		QGroupBox* robotBox = new QGroupBox;
+		robotBox->setObjectName("robotBox");
+
+		if(socket->getTeamColor(i)==0)
+			robotBox->setStyleSheet("QGroupBox#robotBox { background-color: rgb(54,166,237) }");
+		else if(socket->getTeamColor(i)==1)
+			robotBox->setStyleSheet("QGroupBox#robotBox { background-color: rgb(255,140,135) }");
+		else
+			robotBox->setStyleSheet("QGroupBox#robotBox { border: 2px solid gray ; border-radius: 3px }");
+
+		QLabel* robotName = new QLabel(socket->getName(i));
+		robotName->setFont(bold40);
+		robotLayout->addWidget(robotName, Qt::AlignHCenter);
+
+		QLabel* robotIP = new QLabel(QString("IP:  ") + (socket->getHostAddress(i)).toString());
+		robotLayout->addWidget(robotIP, Qt::AlignHCenter);
+
+		QSpacerItem* spacer = new QSpacerItem(0,500,QSizePolicy::Minimum,QSizePolicy::Maximum);
+		robotLayout->addItem(spacer);
+
+		robotBox->setLayout(robotLayout);
+		mainLayout->addWidget(robotBox);
 	}
 }
-
-//display everything about a robot in one of
-//five slots in the view
-void NetMon::setupRobotView(int viewPos, int arrayPos){
-	if(viewPos < 0 || viewPos > 4)
-		return;
-	else {
-		QLabel* label = new QLabel(socket->getName(arrayPos));
-		label->setFont(bold40);
-		mainLayout->addWidget(label);
-	}
-
-}
-
 
 void NetMon::testBots(){
 	SocketReader::Bot testBot1 = SocketReader::Bot();
@@ -68,7 +72,7 @@ void NetMon::testBots(){
 	testBot2.name = QString("mal");
 	testBot2.teamNum = 69;
 	testBot2.playerNum = 0;
-	testBot2.teamColor = 0;
+	testBot2.teamColor = 1;
 	testBot2.address = QHostAddress("139.140.218.10");
 	socket->connectedBots.push_back(testBot2);
 
@@ -76,7 +80,7 @@ void NetMon::testBots(){
 	testBot3.name = QString("jayne");
 	testBot3.teamNum = 69;
 	testBot3.playerNum = 0;
-	testBot3.teamColor = 0;
+	testBot3.teamColor = 2;
 	testBot3.address = QHostAddress("139.140.218.10");
 	socket->connectedBots.push_back(testBot3);
 
@@ -84,7 +88,7 @@ void NetMon::testBots(){
 	testBot4.name = QString("wash");
 	testBot4.teamNum = 69;
 	testBot4.playerNum = 0;
-	testBot4.teamColor = 0;
+	testBot4.teamColor = 3;
 	testBot4.address = QHostAddress("139.140.218.10");
 	socket->connectedBots.push_back(testBot4);
 

@@ -41,6 +41,7 @@ public:
 	int getTeamColor(int);
 	int getPlayerNum(int);
 	QString getName(int);
+	QHostAddress getHostAddress(int);
     int getSize();
 
 	struct Bot {
