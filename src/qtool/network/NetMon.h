@@ -11,6 +11,7 @@
 
 #include <QWidget>
 #include <QLabel>
+#include <QFont>
 #include <QtGui>
 #include <QtNetwork/QUdpSocket>
 #include <vector>
@@ -21,16 +22,27 @@
 namespace qtool {
 namespace network {
 
-class NetMon : public QMainWindow {
+class NetMon : public QWidget {
 	Q_OBJECT
 
 public:
-	NetMon(data::DataManager::ptr dataManager);
+	NetMon(data::DataManager::ptr dataManager, QWidget* parent = 0);
 	~NetMon(){}
 
 private:
 	data::DataManager::ptr dataManager;
-	network::SocketReader* onlineBots;
+	network::SocketReader* socket;
+	QHBoxLayout* mainLayout;
+	QFont bold40;
+	int frameWidth;
+
+	void display();
+	void setupRobotView(int, int);
+	void testBots();
+
+private slots:
+	void updateRobot();
+	void addRobot();
 };
 
 }

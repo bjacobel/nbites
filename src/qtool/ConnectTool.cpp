@@ -26,7 +26,7 @@ ConnectTool::ConnectTool() : EmptyQTool("Robot Connection Tool"),
     toolTabs->addTab(particleViewer, tr("Particle Viewer"));
     toolTabs->addTab(new FieldViewer(dataManager, this), tr("Field Viewer"));
     toolTabs->addTab(overseerClient, tr("Overseer"));
-	toolTabs->addTab(new NetMon(dataManager), tr("Net Utils"));
+	toolTabs->addTab(new NetMon(dataManager, this), tr("Net Utils"));
 
 	scrollArea->setWidget(toolTabs);
 	scrollArea->resize(toolTabs->size());

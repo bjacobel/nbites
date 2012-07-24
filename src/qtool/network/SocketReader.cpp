@@ -108,6 +108,9 @@ int SocketReader::getTeamColor(int i){//0=blue, 1=red
 int SocketReader::getPlayerNum(int i){
 	return connectedBots[i].playerNum;
 }
+QString SocketReader::getName(int i){
+	return connectedBots[i].name;
+}
 int SocketReader::getSize(){
 	return connectedBots.size();
 }

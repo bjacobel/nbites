@@ -40,6 +40,7 @@ public:
     int getTeamNum(int);
 	int getTeamColor(int);
 	int getPlayerNum(int);
+	QString getName(int);
     int getSize();
 
 	struct Bot {
@@ -57,7 +58,9 @@ public:
 		int teamNum;
         int teamColor; //0=blue,  1=red
 		int playerNum;
+		QString name;
     };
+	std::vector<Bot> connectedBots;
 
     void startListening();
     void stopListening();
@@ -72,7 +75,6 @@ signals:
 	void replacedRobot();
 
 private:
-    std::vector<Bot> connectedBots;
     QUdpSocket udpSocket;
 	bool robotExistsAlready;
 };
