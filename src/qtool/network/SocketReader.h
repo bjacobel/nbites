@@ -72,12 +72,10 @@ public slots:
     void readSocket();
 
 signals:
-    void addedNewRobot();
-	void replacedRobot();
+    void socketUpdate();
 
 private:
     QUdpSocket udpSocket;
-	bool robotExistsAlready;
 };
 }
 }

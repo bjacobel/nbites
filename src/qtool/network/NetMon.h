@@ -27,7 +27,9 @@ class NetMon : public QWidget {
 
 public:
 	NetMon(data::DataManager::ptr dataManager, QWidget* parent = 0);
-	~NetMon(){}
+	~NetMon(){
+		socket->stopListening();
+	}
 
 private:
 	data::DataManager::ptr dataManager;

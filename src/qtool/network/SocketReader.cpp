@@ -55,16 +55,10 @@ void SocketReader::readSocket(){
             robotExistsAlready = 0;
 			for(int i = 0; i < connectedBots.size(); i++){
                 //if this robot is already in the array, delete the instance of it that's older
-				if(connectedBots[i].address == newBot.address){
+				if(connectedBots[i].address == newBot.address)
                     connectedBots.erase(connectedBots.begin() + i);
-					emit replacedRobot();
-					robotExistsAlready = 1;
-                }
             }
-			//if the robot wasn't a duplicate, add it but emit a different signal
-			if(!robotExistsAlready)
-				emit addedNewRobot();
-            connectedBots.push_back(newBot);
+			emit socketUpdate();
         }
     }
 }

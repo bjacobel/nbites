@@ -22,8 +22,8 @@ NetMon::NetMon(DataManager::ptr dataManager, QWidget* parent) :
 	//bold40.setBold(true);
 	bold40.setWeight(100);
 
-	//connect(socket, SIGNAL(replacedRobot()), this, SLOT(updateRobot()));
-	//connect(socket, SIGNAL(addedNewRobot()), this, SLOT(addRobot()));
+	connect(socket, SIGNAL(socketUpdate()), this, SLOT(updateDisplay()));
+	connect(socket, SIGNAL(socketUpdate()), this, SLOT(updateDisplay()));
 
 	testBots();
 	updateDisplay();
@@ -31,25 +31,36 @@ NetMon::NetMon(DataManager::ptr dataManager, QWidget* parent) :
 
 void NetMon::updateDisplay(){
 	for(int i = 0; i < socket->getSize(); i++){
+
 		QVBoxLayout* robotLayout = new QVBoxLayout;
 		robotLayout->setContentsMargins(10, 10, 10, 10);
 
 		QGroupBox* robotBox = new QGroupBox;
 		robotBox->setObjectName("robotBox");
 
-		if(socket->getTeamColor(i)==0)
-			robotBox->setStyleSheet("QGroupBox#robotBox { background-color: rgb(54,166,237) }");
-		else if(socket->getTeamColor(i)==1)
-			robotBox->setStyleSheet("QGroupBox#robotBox { background-color: rgb(255,140,135) }");
-		else
-			robotBox->setStyleSheet("QGroupBox#robotBox { border: 2px solid gray ; border-radius: 3px }");
+		if(socket->getTeamColor(i)==0) //blue team
+			robotBox->setStyleSheet(
+				"QGroupBox#robotBox { border: 5px solid rgb(54,166,237) ; border-radius: 5px }");
+		else if(socket->getTeamColor(i)==1)  //red team
+			robotBox->setStyleSheet(
+				"QGroupBox#robotBox { border: 5px solid rgb(255,140,135) ; border-radius: 5px}");
+		else //if the robot isn't on a team
+			robotBox->setStyleSheet(
+				"QGroupBox#robotBox { border: 2px solid gray ; border-radius: 5px }");
 
-		QLabel* robotName = new QLabel(socket->getName(i));
-		robotName->setFont(bold40);
-		robotLayout->addWidget(robotName, Qt::AlignHCenter);
+		QLabel* robName = new QLabel(socket->getName(i));
+		QLabel* robotIP = new QLabel(QString("IP:  ") +
+									 (socket->getHostAddress(i)).toString());
+		QLabel* teamNum = new QLabel(QString("Team #:  ") +
+									 QString::number(socket->getTeamNum(i)));
+		QLabel* playNum = new QLabel(QString("Player #:  ") +
+									 QString::number(socket->getPlayerNum(i)));
 
-		QLabel* robotIP = new QLabel(QString("IP:  ") + (socket->getHostAddress(i)).toString());
-		robotLayout->addWidget(robotIP, Qt::AlignHCenter);
+		robName->setFont(bold40);
+		robotLayout->addWidget(robName, Qt::AlignHCenter);
+		robotLayout->addWidget(robotIP, Qt::AlignJustify);
+		robotLayout->addWidget(teamNum, Qt::AlignJustify);
+		robotLayout->addWidget(playNum, Qt::AlignJustify);
 
 		QSpacerItem* spacer = new QSpacerItem(0,500,QSizePolicy::Minimum,QSizePolicy::Maximum);
 		robotLayout->addItem(spacer);
