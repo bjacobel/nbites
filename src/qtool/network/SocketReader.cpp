@@ -52,7 +52,6 @@ void SocketReader::readSocket(){
 			newBot.teamColor = head->color;
 			newBot.playerNum = head->player;
 
-            robotExistsAlready = 0;
 			for(int i = 0; i < connectedBots.size(); i++){
                 //if this robot is already in the array, delete the instance of it that's older
 				if(connectedBots[i].address == newBot.address)
