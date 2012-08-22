@@ -72,7 +72,7 @@ void NetMon::updateDisplay(){
 
 void NetMon::testBots(){
 	SocketReader::Bot testBot1 = SocketReader::Bot();
-	testBot1.name = QString("zoe");
+	testBot1.hostname = QString("zoe");
 	testBot1.teamNum = 69;
 	testBot1.playerNum = 0;
 	testBot1.teamColor = 0;
@@ -80,7 +80,7 @@ void NetMon::testBots(){
 	socket->connectedBots.push_back(testBot1);
 
 	SocketReader::Bot testBot2 = SocketReader::Bot();
-	testBot2.name = QString("mal");
+	testBot2.hostname = QString("mal");
 	testBot2.teamNum = 69;
 	testBot2.playerNum = 0;
 	testBot2.teamColor = 1;
@@ -88,7 +88,7 @@ void NetMon::testBots(){
 	socket->connectedBots.push_back(testBot2);
 
 	SocketReader::Bot testBot3 = SocketReader::Bot();
-	testBot3.name = QString("jayne");
+	testBot3.hostname = QString("jayne");
 	testBot3.teamNum = 69;
 	testBot3.playerNum = 0;
 	testBot3.teamColor = 2;
@@ -96,7 +96,7 @@ void NetMon::testBots(){
 	socket->connectedBots.push_back(testBot3);
 
 	SocketReader::Bot testBot4 = SocketReader::Bot();
-	testBot4.name = QString("wash");
+	testBot4.hostname = QString("wash");
 	testBot4.teamNum = 69;
 	testBot4.playerNum = 0;
 	testBot4.teamColor = 3;
@@ -104,7 +104,7 @@ void NetMon::testBots(){
 	socket->connectedBots.push_back(testBot4);
 
 	SocketReader::Bot testBot5 = SocketReader::Bot();
-	testBot5.name = QString("river");
+	testBot5.hostname = QString("river");
 	testBot5.teamNum = 69;
 	testBot5.playerNum = 0;
 	testBot5.teamColor = 0;

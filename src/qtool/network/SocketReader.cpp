@@ -51,6 +51,8 @@ void SocketReader::readSocket(){
 			newBot.teamNum = head->team;
 			newBot.teamColor = head->color;
 			newBot.playerNum = head->player;
+			newBot.hostname = QHostInfo::lookupHost(
+				datagram_source.toIPv4Address, this, SLOT(printResults(QHostInfo)));
 
 			for(int i = 0; i < connectedBots.size(); i++){
                 //if this robot is already in the array, delete the instance of it that's older

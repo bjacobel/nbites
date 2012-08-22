@@ -46,6 +46,7 @@ public:
 
 	struct Bot {
         QHostAddress address;
+		QString hostname;
         float xPos;
         float yPos;
         float heading;
@@ -59,7 +60,6 @@ public:
 		int teamNum;
         int teamColor; //0=blue,  1=red
 		int playerNum;
-		QString name;
     };
 	std::vector<Bot> connectedBots;
 
