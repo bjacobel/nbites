@@ -12,7 +12,7 @@ add_definitions(${QT_DEFINITIONS})
 
 ###### sources
 
-set( sim_srcs fakemain.cpp
+set( sim_srcs main.cpp
 )
 
 ###### subdirectories
