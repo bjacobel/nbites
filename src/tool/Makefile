@@ -6,12 +6,15 @@ BUILD_DIR = ../../build/tool
 SRC_DIR = ../../src/tool
 
 EXECUTABLE = $(BUILD_DIR)/tool
+TOOLCHAIN = ../man/cmake/generic.cmake
+
+CMAKE_FLAGS = -DTOOL_EXECUTABLE=$(EXECUTABLE) -DCMAKE_TOOLCHAIN_FILE=$(TOOLCHAIN)
 
 .PHONY: build
 build:
 	mkdir -p $(BUILD_DIR)
 	cd $(BUILD_DIR); \
-	cmake $(SRC_DIR) -DTOOL_EXECUTABLE=$(EXECUTABLE); \
+	cmake $(CMAKE_FLAGS) $(SRC_DIR); \
 	$(MAKE) --no-print-directory
 
 .PHONY: run
@@ -22,7 +25,7 @@ run: build
 config:
 	mkdir -p $(BUILD_DIR)
 	cd $(BUILD_DIR); \
-	cmake $(SRC_DIR) -DTOOL_EXECUTABLE=$(EXECUTABLE); \
+	cmake $(CMAKE_FLAGS) $(SRC_DIR); \
 	ccmake $(SRC_DIR)
 
 .PHONY: clean

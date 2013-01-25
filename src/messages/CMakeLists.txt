@@ -47,5 +47,6 @@ add_library(
 
 target_link_libraries(
   messages
+  common
   ${PROTOBUF_LIBRARY}
   )
