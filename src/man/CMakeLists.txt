@@ -1,216 +1,80 @@
-##############################
-#
-# WELCOME
-#
-# This is the main cmake configuration file
-# associate to your projects
-# You can define here specific compilation options
-#
-# More about cmake : www.cmake.org
-#
-# Using cmake command line :
-# 1. Create a build directory : mkdir build
-# 2. Configure cmake project : cd build; cmake ..
-#   You can also generate project with your favorite IDE :
-#   Example : Under Mac osx use "cmake .. -G XCode"
-#   see cmake help for more information
-# 3. Edit project option : ccmake .
-# 4. Build it : make
+project( man )
+cmake_minimum_required( VERSION 2.8.3 )
 
-############################ PROJECT NAME
-# The name of this cmake project
-PROJECT( MAN )
-CMAKE_MINIMUM_REQUIRED( VERSION 2.8.3 )
+# A list of options that we do want
+include( cmake/RobotConfig.cmake )
+# A list of options that should be advanced
+include( cmake/Advanced.cmake )
+# Compiler flags
+include( cmake/Flags.cmake )
 
-ENABLE_TESTING()
+# Option to turn rebuilding our protobuf libs on/off
+option( BUILD_PROTOBUF "Rebuild the protobuf libraries." OFF )
+if( BUILD_PROTOBUF )
+  # Only build them if the user wants to
+  include( cmake/BuildProtobuf.cmake )
+endif()
 
-############################ BASE DEFINITIONS
-# Include  the basic definitions accross all projects
-INCLUDE( cmake/base_definitions.cmake )
+# So that we can use find_package commands
+set( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/" )
 
-############################ FIND PACKAGE
-# Libraries specifics. Define here cmake packages
-# usefull to your project
-FIND_PACKAGE( PythonLibs  REQUIRED )
+# For Aldebaran's headers
+find_package( ALCOMMON REQUIRED )
+include_directories( ${ALCOMMON_INCLUDE_DIR} )
 
-#SET(CMAKE_THREADS_PREFER_PTHREADS ON)
-#FIND_PACKAGE( Threads  REQUIRED )
+find_package( PROTOBUF REQUIRED )
+include_directories( SYSTEM ${PROTOBUF_INCLUDE_DIR} )
 
-SET(Boost_USE_MULTITHREADED ON)
-SET(Boost_USE_STATIC_LIBS OFF)
-FIND_PACKAGE( Boost REQUIRED )
-MARK_AS_ADVANCED( Boost_DIR )
+# Configure the copy script based on our settings
+configure_file(
+  "${CMAKE_CURRENT_LIST_DIR}/cmake/upload.sh.in"
+  "${PROJECT_BINARY_DIR}/upload.sh"
+)
 
-IF(WEBOTS_BACKEND)
-  include ( cmake/FindWEBOTS.cmake )
-ELSE(WEBOTS_BACKEND)
-  include ( cmake/FindALCOMMON.cmake )
-ENDIF(WEBOTS_BACKEND)
+set( MAN_SRCS main.cpp
+  NewMan.cpp
+  Threads.cpp
+)
 
-include(../cmake/protobuf.cmake)
-include_directories(${PROTOBUF_INCLUDE_DIR})
+# Compile portals, which is outside the source tree so specify a destination
+add_subdirectory( ../portals ${CMAKE_CURRENT_BINARY_DIR}/portals/ )
+# Make portals available to everything
+include_directories( ../portals )
+# Also messages
+add_subdirectory( ../messages ${CMAKE_CURRENT_BINARY_DIR}/messages/ )
+# And make sure generated pb.h files are visible
+include_directories( ${CMAKE_CURRENT_BINARY_DIR}/messages/ )
+include_directories( ../messages )
 
-############################ BUILDCONFIG
-# Include the config file for this build
-INCLUDE( ${MAN_CMAKE_DIR}/buildconfig.cmake )
+# Actual subdirectories
+add_subdirectory( common )
+include_directories( common )
+add_subdirectory( synchro )
 
-############################ CONFIG.H GENERATION
-CONFIGURE_FILE(
-  ${MAN_CMAKE_DIR}/manconfig.in
-  ${CFG_DIR}/manconfig.h
-  ESCAPE_QUOTES
-  )
+# Actual modules
+add_subdirectory( image )
+add_subdirectory( log )
 
-
-############################ OFFLINE
-SET( OFFLINE_NAOQI_PATH
-  $ENV{AL_DIR}
-  CACHE STRING
-  "The local path of the naoqi distribution to use with Webots"
-  )
-
-############################ REMOTE INSTALLATION
-# Define this to remotely install the binary or library on the robot.
-# Cannot be selected unless OE_CROSS_BUILD is set to ON.
-IF(WEBOTS_BACKEND)
-  OPTION( REMOTE_INSTALL
-    "Remotely install the libary or binary on the robot."
-    OFF
-    )
-ELSE(WEBOTS_BACKEND)
-  OPTION( REMOTE_INSTALL
-    "Remotely install the libary or binary on the robot."
-    ON
-    )
-ENDIF(WEBOTS_BACKEND)
-
-SET( @REMOTE_ADDRESS@
-  "mal.local"
-  CACHE STRING
-  "The remote address of the robot"
-  )
-SET( REMOTE_ADDRESS ${@REMOTE_ADDRESS@} )
-
-############################ COLOR TABLE SELECTION
-# Set the path to the color table you wish to be loaded into install/etc
-SET( @TABLE_TOP@
-  "../../data/tables/120-top.mtb"
-  CACHE STRING
-  "Path relative to man directory for the desired top camera color table"
-  )
-SET( TABLE_TOP ${@TABLE_TOP@})
-
-SET( @TABLE_BOTTOM@
-  "../../data/tables/120-bottom.mtb"
-  CACHE STRING
-  "Path relative to man directory for the desired bottom camera color table"
-  )
-SET( TABLE_BOTTOM ${@TABLE_BOTTOM@})
-
-#upload.sh needs to get generated after REMOTE and OFFLINE stuff is set
-CONFIGURE_FILE(
-  ${MAN_CMAKE_DIR}/upload.sh.in
-  ${CMAKE_CURRENT_BINARY_DIR}/upload.sh
-  ESCAPE_QUOTES
-  )
-
-IF ( NOT USE_ALSPEECH )
-  SET( USE_ALSPEECH_POUND "#" )
-ELSE()
-  SET( USE_ALSPEECH_POUND "" )
-ENDIF()
-
-############################ DEFINITIONS
-# Add here definition needed.
-ADD_DEFINITIONS(
-  ${CMAKE_THREAD_LIBS_INIT}
-  ${WEBOTS_DEFINITIONS}
-  )
-
-
-############################ INCLUDE DIRECTORY
-# Define include directories
-INCLUDE_DIRECTORIES(
-  ${NBCOMMON_INCLUDE_DIR}
-  ${Boost_INCLUDE_DIR}
-  ${PYTHON_INCLUDE_PATH}
-  ${ALCOMMON_INCLUDE_DIR}
-  ${MINGW_INCLUDE_DIR}
-  ${MAN_INCLUDE_DIR}
-  ${COMM_INCLUDE_DIR}
-  ${CORPUS_INCLUDE_DIR}
-  ${MOTION_INCLUDE_DIR}
-  ${BHWALK_INCLUDE_DIR}
-  ${NOGGIN_INCLUDE_DIR}
-  ${VISION_INCLUDE_DIR}
-  ${WEBOTS_INCLUDE_DIR}
-  ${MEMORY_INCLUDE_DIR}
-  ${PROJECT_BINARY_DIR}
-  ${CFG_DIR}
-  )
-
-############################ Platform settings
-
-IF(BUILDING_FOR_A_REMOTE_NAO)
-  SET( MAN_LOADER_SRC NaoManLoader )
-ENDIF()
-
-############################ Setting up Man
-SET( MAN_SRCS Man
-              TMan
-              TTMan
-              ${MAN_LOADER_SRC} )
-
-IF(WEBOTS_BACKEND)
-#NOTE: this doesn't work anymore because we changed the way we
-# load man - Octavian
-  LIST(APPEND MAN_SRCS nao_soccer_player
-    )
-ENDIF()
-
-SET( MAN_PYTHON_SRCS __init__.py )
-
-ADD_LIBRARY(
-  ${MAN_TARGET}
+add_library(
+  man
   SHARED
   ${MAN_SRCS}
-  )
+)
 
-TARGET_LINK_LIBRARIES(
-  ${MAN_TARGET}
-  ${COMM_TARGET}
-  ${SENSORS_TARGET}
-  ${ROBOT_INTERFACE_TARGET}
-  ${ROBOT_CONNECT_TARGET}
-  ${NBINCLUDE_TARGET}
-  ${VISION_TARGET}
-  ${MOTION_TARGET}
-  ${NOGGIN_TARGET}
-  ${MEMORY_TARGET}
-  ${WEBOTS_LIBRARIES}
-  )
+# If protobuf libs don't exist yet, make sure they build before man
+if( BUILD_PROTOBUF )
+add_dependencies(messages protobuf_libs)
+endif()
 
-############################# INSTALL PATHS
+target_link_libraries(
+  man
+  portals
+  messages
+  synchro
+  image
+  log
+)
 
-INSTALL(
-  TARGETS ${MAN_TARGET}
-  RUNTIME DESTINATION ${OUTPUT_ROOT_DIR_BIN}
-  LIBRARY DESTINATION ${OUTPUT_ROOT_DIR_LIB}
-  CONFIGURATIONS "" Debug Release
-  )
-INSTALL(
-  FILES ${MAN_PYTHON_SRCS}
-  DESTINATION ${MAN_PYTHON_TARGET_DIR}
-  CONFIGURATIONS "" Debug Release
-  )
-
-############################ (SUB)DIRECTORY COMPILATION
-# Set the sudirectories to
-# include in this package
-add_subdirectory( memory )
-add_subdirectory( comm )
-add_subdirectory( corpus )
-add_subdirectory( vision )
-add_subdirectory( motion )
-add_subdirectory( noggin )
-add_subdirectory( include )
+install( TARGETS man
+  LIBRARY DESTINATION lib
+)

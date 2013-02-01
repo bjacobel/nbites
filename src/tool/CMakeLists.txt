@@ -1,0 +1,57 @@
+# Main CMake file for the Tool!
+project( tool )
+cmake_minimum_required( VERSION 2.8.3 )
+
+# Dependencies
+
+find_package( Qt4 REQUIRED )
+
+include( ${QT_USE_FILE} )
+add_definitions( ${QT_DEFINITIONS} )
+
+include( ../man/cmake/FindPROTOBUF.cmake )
+
+# Sources
+set( tool_srcs main.cpp
+  Tool.cpp
+  )
+
+set( tool_headers
+  Tool.h
+)
+
+# Compile portals into portals folder
+add_subdirectory( ../portals ${CMAKE_CURRENT_BINARY_DIR}/portals )
+include_directories( ../portals )
+
+# Compile messages and make them available
+add_subdirectory( ../messages ${CMAKE_CURRENT_BINARY_DIR}/messages )
+include_directories( ../messages )
+include_directories( ${CMAKE_CURRENT_BINARY_DIR}/messages )
+
+# Borrow common for log...
+add_subdirectory( ../man/common ${CMAKE_CURRENT_BINARY_DIR}/common )
+include_directories( ../man/common )
+
+# Borrow a log module from man
+add_subdirectory( ../man/log ${CMAKE_CURRENT_BINARY_DIR}/log )
+include_directories( ../man )
+
+add_subdirectory( unlog )
+add_subdirectory( visionsim )
+
+# Qt4 goodness
+Qt4_wrap_cpp( tool_headers_moc ${tool_headers} )
+
+# The main executable
+add_executable( ${TOOL_EXECUTABLE}
+  ${tool_srcs}
+  ${tool_headers_moc} )
+
+target_link_libraries(
+  ${TOOL_EXECUTABLE}
+  portals
+  unlog
+  visionsim
+  ${QT_LIBRARIES}
+  )
