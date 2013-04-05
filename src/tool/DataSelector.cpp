@@ -58,10 +58,16 @@ void DataSelector::setupFSBrowser() {
 
     connect(fsBrowser, SIGNAL(expanded(const QModelIndex&)),
             this, SLOT(folderChanged(const QModelIndex&)));
+	connect(fsBrowser, SIGNAL(collapsed(const QModelIndex&)),
+            this, SLOT(folderClosed(const QModelIndex&)));
 }
 
 void DataSelector::folderChanged(const QModelIndex& index) {
     this->scanFolderForLogs(fsModel->filePath(index));
+}
+
+void DataSelector::folderClosed(const QModelIndex& index) {
+	emit signalCloseDataSet();
 }
 
 void DataSelector::scanFolderForLogs(QString path) {

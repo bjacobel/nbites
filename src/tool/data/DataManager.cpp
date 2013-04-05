@@ -32,6 +32,7 @@ DataManager::~DataManager() {
 
 void DataManager::newInputProvider(InProvider::ptr newInput, std::string name) {
     parsingBoard.newInputProvider(newInput, name);
+	std::cout<<"that did it"<<std::endl;
 }
 
 void DataManager::reset() {

@@ -25,6 +25,7 @@ public:
 
 signals:
     void signalNewDataSet(std::vector<std::string> files);
+	void signalCloseDataSet();
 
 private:
     void setupFSModel();
@@ -34,6 +35,7 @@ private:
 
 private slots:
     void folderChanged(const QModelIndex& index);
+	void folderClosed(const QModelIndex& index);
 
 private:
     QFileSystemModel* fsModel;

@@ -124,6 +124,13 @@ void ToolDiagram::runBackward()
 
 void ToolDiagram::addUnloggers(std::vector<std::string> paths)
 {
+    //destroy all the current unloggers
+	for (std::vector<unlog::UnlogBase*>::iterator i = unloggers.begin();
+         i != unloggers.end(); i++)
+    {
+	    (*i)->destroy();
+	}
+
     for (std::vector<std::string>::iterator i = paths.begin();
          i != paths.end(); i++)
     {
