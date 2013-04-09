@@ -21,21 +21,28 @@ LogViewer::LogViewer(QWidget* parent) : QMainWindow(parent),
 
 void LogViewer::newDisplayWidget(QWidget* widget, std::string title)
 {
-    if (title != "Top Image" && title != "Bottom Image")
+	if (title != "Top Image" && title != "Bottom Image")
     {
-        QDockWidget* dockWidget =
+		LogViewer::removeDisplayWidgets();
+		QDockWidget* dockWidget =
             new QDockWidget(QString(title.data()), this);
         dockWidget->setMinimumWidth(300);
         dockWidget->setMaximumHeight(125);
 
         dockWidget->setWidget(widget);
         this->addDockWidget(Qt::RightDockWidgetArea, dockWidget);
+		addedWidgets.push_back(dockWidget);
     }
     else
     {
         imageTabs.addTab(widget, QString(title.data()));
     }
+}
 
+//remove all currently active display widgets
+void LogViewer::removeDisplayWidgets(){
+	for(std::vector<QDockWidget*>::iterator i = addedWidgets.begin(); i != addedWidgets.end(); i++)
+		delete *i;
 }
 
 }

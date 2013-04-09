@@ -125,14 +125,19 @@ void ToolDiagram::runBackward()
 void ToolDiagram::addUnloggers(std::vector<std::string> paths)
 {
     //destroy all the current unloggers
-	for (std::vector<unlog::UnlogBase*>::iterator i = unloggers.begin();
-         i != unloggers.end(); i++)
-    {
-	    (*i)->destroy();
+	for (std::vector<unlog::UnlogBase*>::iterator i = unloggers.begin(); i != unloggers.end(); i++){
+	    //this deletes it from here but doesn't remove it from robograms
+		//we need a module remove method in robogram
+		//subclass robogram?
+		delete *i;
 	}
 
-    for (std::vector<std::string>::iterator i = paths.begin();
-         i != paths.end(); i++)
+	//destroy all the current displays
+	for (std::vector<portals::Module*>::iterator i = displays.begin(); i != displays.end(); i++){
+	    delete *i;
+	}
+
+    for (std::vector<std::string>::iterator i = paths.begin(); i != paths.end(); i++)
     {
         if(unlogFrom(*i))
         {

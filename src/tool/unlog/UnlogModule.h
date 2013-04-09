@@ -67,9 +67,6 @@ public:
     void openFile() throw (file_exception);
     void closeFile();
 
-	//I'm doing this wrong
-	void destroy() { std::cout<<"die! die!!!!!!"<<std::endl; }
-
     virtual GUI makeMyGUI() = 0;
 
 protected:

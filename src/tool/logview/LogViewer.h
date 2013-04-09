@@ -28,9 +28,11 @@ public:
 
 public slots:
     void newDisplayWidget(QWidget*, std::string);
+	void removeDisplayWidgets();
 
 protected:
     QTabWidget imageTabs;
+	std::vector<QDockWidget*> addedWidgets;
 };
 
 }
