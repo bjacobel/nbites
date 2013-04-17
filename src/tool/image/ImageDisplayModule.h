@@ -99,9 +99,11 @@ public:
 
 signals:
     void mouseClicked(int x, int y, int brushSize, bool leftClick);
+	void mouseMoved(double relX, double relY);
 
 private:
     void updateBrushCursor();
+	double xrel,yrel;
 
 private:
     QColor brushColor;

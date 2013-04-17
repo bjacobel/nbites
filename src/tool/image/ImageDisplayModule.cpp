@@ -188,8 +188,13 @@ void ImageDisplayListener::updateBrushCursor() {
 
 void ImageDisplayListener::mouseMoveEvent(QMouseEvent* event) {
 	//send mouse positions to the thresholded image
-	//event->pos().x(); and event->pos().y();
-	
+	//send them as porportions of the whole so they can be scaled easily
+	//access with event->pos().x(); and event->pos().y();
+
+
+	xrel = event->pos().x()/(double)this->width();
+	yrel = event->pos().y()/(double)this->height();
+	emit mouseMoved(xrel, yrel),
 }
 
 }
