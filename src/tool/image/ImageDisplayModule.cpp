@@ -17,6 +17,8 @@ void ThresholdedImageDisplayModule::run_()
     setPixmap(QPixmap::fromImage(makeImage(filter)));
 }
 
+//possibly create an overlay and put the cursor in it
+//or just hack a cursor in at the end
 QImage ThresholdedImageDisplayModule::makeImage(byte filter_)
 {
     QImage image(imageIn.message().width(),
@@ -194,7 +196,7 @@ void ImageDisplayListener::mouseMoveEvent(QMouseEvent* event) {
 
 	xrel = event->pos().x()/(double)this->width();
 	yrel = event->pos().y()/(double)this->height();
-	emit mouseMoved(xrel, yrel),
+	emit mouseMoved(xrel, yrel);
 }
 
 }
