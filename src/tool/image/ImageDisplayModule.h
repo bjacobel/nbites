@@ -95,6 +95,7 @@ public:
     void wheelEvent(QWheelEvent* event);
     void setBrushColor(QColor _brushColor) { brushColor = _brushColor; updateBrushCursor();}
     int getBrushSize() { return brushSize; }
+	void mouseMoveEvent(QMouseEvent *event);
 
 signals:
     void mouseClicked(int x, int y, int brushSize, bool leftClick);

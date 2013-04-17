@@ -147,6 +147,7 @@ ImageDisplayListener::ImageDisplayListener(QWidget *parent)
 {
 
     QWidget::setAttribute(Qt::WA_NoMousePropagation, true );
+	setMouseTracking(true);
 }
 
 void ImageDisplayListener::mouseReleaseEvent ( QMouseEvent * event )
@@ -183,6 +184,12 @@ void ImageDisplayListener::updateBrushCursor() {
 
     cursor.fill(brushColor);
     this->setCursor(QCursor(cursor, brushSize, 0)); // not exactly sure why this works
+}
+
+void ImageDisplayListener::mouseMoveEvent(QMouseEvent* event) {
+	//send mouse positions to the thresholded image
+	//event->pos().x(); and event->pos().y();
+	
 }
 
 }
