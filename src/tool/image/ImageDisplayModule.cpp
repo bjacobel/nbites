@@ -51,6 +51,36 @@ QImage ThresholdedImageDisplayModule::makeImage(byte filter_)
     return image;
 }
 
+void ThresholdedImageDisplayModule::drawCursor(double relX, double relY){
+	//std::cout<<"I should draw a cursor at ("<<relX<<","<<relY<<")"<<std::endl;
+	cursorX = relX*imageIn.message().width();
+	cursorY = relY*imageIn.message().height();
+	//makeOverlayImage();
+}
+
+QImage ThresholdedImageDisplayModule::makeOverlayImage()
+{
+	QImage image(imageIn.message().width(),
+                 imageIn.message().height(),
+                 QImage::Format_RGB32);
+
+	/*QPixmap pm(imageIn.message().width(), imageIn.message().width());
+	pm.fill(Qt::transparent);
+	QPainter painter(&pm);
+	painter.fillRect(QRectF(cursorX, cursorY, 5, 5), Qt::black);
+	overlayPainter = pm;
+	update();*/
+
+	return image;
+
+}
+
+/*void ThresholdedImageDisplayModule::paintEvent(QPaintEvent* event)
+{
+	QPainter painter(this);
+	painter.drawPixmap(0, 0, overlayPainter);
+	}*/
+
 ImageDisplayModule::ImageDisplayModule(QWidget* parent) : QLabel(parent),
                                                           channel(RGB)
 {

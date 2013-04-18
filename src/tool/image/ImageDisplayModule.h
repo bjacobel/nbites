@@ -6,6 +6,7 @@
 #include <QLabel>
 #include <QImage>
 #include <QMouseEvent>
+#include<QPainter>
 
 namespace tool {
 namespace image {
@@ -57,8 +58,17 @@ protected:
     virtual void run_();
 
     QImage makeImage(byte filter);
+	QImage makeOverlayImage();
 
     byte filter;
+	int cursorX, cursorY;
+
+	QPixmap overlayPainter;
+
+	//void paintEvent(QPaintEvent* event);
+
+public slots:
+	void drawCursor(double relX, double relY);
 };
 
 class ImageDisplayModule : public QLabel,

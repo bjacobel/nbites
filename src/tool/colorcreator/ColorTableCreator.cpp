@@ -58,6 +58,12 @@ ColorTableCreator::ColorTableCreator(QWidget *parent) :
     connect(&bottomDisplay, SIGNAL(mouseClicked(int, int, int, bool)),
             this, SLOT(canvasClicked(int, int, int, bool)));
 
+	connect(&topDisplay, SIGNAL(mouseMoved(double, double)),
+			&thrDisplay, SLOT(drawCursor(double, double)));
+
+	connect(&bottomDisplay, SIGNAL(mouseMoved(double, double)),
+			&thrDisplay, SLOT(drawCursor(double, double)));
+
     QVBoxLayout* rightLayout = new QVBoxLayout;
 
     colorTableName = new QLabel(this);
@@ -200,7 +206,7 @@ void ColorTableCreator::canvasClicked(int x, int y, int brushSize, bool leftClic
     paintStroke(brushStroke);
 }
 
-void ColorTableCreator::undo() 
+void ColorTableCreator::undo()
 {
     if (brushStrokes.empty())
         return;
