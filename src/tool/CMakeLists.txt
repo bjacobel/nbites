@@ -23,6 +23,12 @@ configure_file(
   "${CMAKE_CURRENT_LIST_DIR}/PathConfig.in"
   "${PROJECT_BINARY_DIR}/PathConfig.h"
 )
+
+# Configure the debug options
+configure_file(
+  "${SHARE_DIR}/cmake/DebugConfig.in"
+  "${PROJECT_BINARY_DIR}/DebugConfig.h"
+)
 include_directories( ${PROJECT_BINARY_DIR} )
 include_directories( ${CMAKE_SOURCE_DIR} )
 
@@ -59,6 +65,7 @@ include_directories( ${MAN_DIR}/support )
 add_subdirectory( ${MAN_DIR}/support ${CMAKE_CURRENT_BINARY_DIR}/man/support)
 
 add_subdirectory( ${MAN_DIR}/image ${CMAKE_CURRENT_BINARY_DIR}/man/image)
+add_subdirectory( ${MAN_DIR}/comm ${CMAKE_CURRENT_BINARY_DIR}/man/comm)
 
 # Actual subdirectories!
 add_subdirectory( unlog )
@@ -67,6 +74,7 @@ add_subdirectory( image )
 add_subdirectory( colorcreator )
 add_subdirectory( viewer )
 add_subdirectory( common )
+add_subdirectory( worldview )
 
 
 # Sources
@@ -98,8 +106,10 @@ target_link_libraries(
   logview
   image_display
   image # man image
+  comm # man comm
   image_display
   viewer
+  worldview
   tool_common
   colorcreator
   ${QT_LIBRARIES}
