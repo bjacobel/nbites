@@ -84,6 +84,7 @@ Tool::~Tool() {
 
 void Tool::setUpModules()
 {
+    /** Color Table Creator Tab **/
     if (diagram.connectToUnlogger<messages::YUVImage>(tableCreator.topImageIn,
                                                       "top") &&
         diagram.connectToUnlogger<messages::YUVImage>(tableCreator.bottomImageIn,
@@ -96,6 +97,36 @@ void Tool::setUpModules()
         std::cout << "Right now you can't use the color table creator without"
                   << " two image logs." << std::endl;
     }
+
+
+    /** FieldViewer Tab **/
+    // Should add field view
+    bool shouldAddFieldView = false;
+    if(diagram.connectToUnlogger<messages::RobotLocation>(fieldView.locationIn,
+                                                          "location"))
+    {
+        fieldView.confirmLocationLogs(true);
+        shouldAddFieldView = true;
+    }
+    else
+    {
+        std::cout << "Warning: location wasn't logged in this file" << std::endl;
+    }
+
+    if(diagram.connectToUnlogger<messages::ParticleSwarm>(fieldView.particlesIn,
+                                                          "particleSwarm"))
+    {
+        fieldView.confirmParticleLogs(true);
+        shouldAddFieldView = true;
+    }
+    else
+    {
+        std::cout << "Warning: Particles were'nt logged in this file" << std::endl;
+    }
+    if(shouldAddFieldView)
+        diagram.addModule(fieldField);
+
+
 }
 
 // Keyboard control
