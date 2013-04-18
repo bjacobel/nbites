@@ -1,68 +1,55 @@
 #include "FieldViewer.h"
-#include "man/memory/Memory.h"
-#include "image/BMPImage.h"
 
-#include <QDebug>
-#include <QVBoxLayout>
-#include <vector>
+#include <QtDebug>
 
-namespace qtool {
-namespace viewer {
+namespace tool{
+namespace viewer{
 
-using namespace data;
-using namespace man::memory;
-using namespace image;
-using namespace overseer;
+FieldViewer::FieldViewer(QWidget* parent):
+    QWidget(parent)
+{
+    fieldPainter = new FieldViewerPainter(this);
 
-FieldViewer::FieldViewer(DataManager::ptr dataManager, QWidget* parent):
-	QWidget(parent),
-	dataManager(dataManager),
-	startButton(new QPushButton("Locate Robots", this)),
-	stopButton(new QPushButton("Stop Location", this)) {
+    mainLayout = new QHBoxLayout(this);
 
-    mainLayout = new QVBoxLayout(this);
-	scaleFactor = 1.0f;
-
-    //field image painted via overlay of robots, field
-    fieldImage = new PaintField(this, scaleFactor);
-    bot_locs = new PaintBots(scaleFactor, this);
-
-    overlayImage = new OverlayedImage(fieldImage, bot_locs, this);
-    fieldView = new BMPImageViewer(overlayImage, this);
-
-    connect(bot_locs->locs, SIGNAL(newRobotLocation()), fieldView, SLOT(updateView()));
+    particleViewBox = new QCheckBox("Particle Viewer",this);
+    selector2 = new QCheckBox("test2", this);
+    selector3 = new QCheckBox("test3",this);
+    selector4 = new QCheckBox("test4", this);
+    selector5= new QCheckBox("test5",this);
+    selector6 = new QCheckBox("test6", this);
+    selector7 = new QCheckBox("test7",this);
+    selector8 = new QCheckBox("test8", this);
 
     field = new QHBoxLayout();
-    field->addWidget(fieldView);
+    field->addWidget(fieldPainter);
 
-    buttonLayout = new QHBoxLayout();
-    buttonLayout->setSpacing(10);
-    buttonLayout->addWidget(startButton);
-    connect(startButton, SIGNAL(clicked()), this, SLOT(drawBots()));
-    buttonLayout->addWidget(stopButton);
-    connect(stopButton, SIGNAL(clicked()), this, SLOT(stopDrawing()));
+    checkBoxes = new QVBoxLayout();
 
-    //paint the field
-    mainLayout->addLayout(buttonLayout);
+    checkBoxes->addWidget(particleViewBox);
+    checkBoxes->addWidget(selector2);
+    checkBoxes->addWidget(selector3);
+    checkBoxes->addWidget(selector4);
+    checkBoxes->addWidget(selector5);
+    checkBoxes->addWidget(selector6);
+    checkBoxes->addWidget(selector7);
+    checkBoxes->addWidget(selector8);
+
+    connect(particleViewBox, SIGNAL(toggled(bool)), this,
+            SLOT(paintParticleView(bool)));
+
     mainLayout->addLayout(field);
+    mainLayout->addLayout(checkBoxes);
+
     this->setLayout(mainLayout);
 }
 
-FieldViewer::~FieldViewer(){
-	bot_locs->locs->stopListening();
+void FieldViewer::paintParticleView(bool state) {
+    if (state)
+        qDebug() << "Paint Particle View";
+    else
+        qDebug() << "Don't Paint Particle View";
 }
 
-void FieldViewer::drawBots(){
-    bot_locs->locs->startListening();
-}
-
-void FieldViewer::stopDrawing(){
-    bot_locs->locs->stopListening();
-}
-
-}
-}
-
-
-
-
+} // namespace viewer
+} // namespace tool
