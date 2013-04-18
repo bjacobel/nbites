@@ -55,8 +55,9 @@ void ThresholdedImageDisplayModule::drawCursor(double relX, double relY){
 	//std::cout<<"I should draw a cursor at ("<<relX<<","<<relY<<")"<<std::endl;
 	cursorX = relX*imageIn.message().width();
 	cursorY = relY*imageIn.message().height();
-	//makeOverlayImage();
+	//QImage overlay = makeOverlayImage();
 }
+
 
 QImage ThresholdedImageDisplayModule::makeOverlayImage()
 {
@@ -79,7 +80,7 @@ QImage ThresholdedImageDisplayModule::makeOverlayImage()
 {
 	QPainter painter(this);
 	painter.drawPixmap(0, 0, overlayPainter);
-	}*/
+}*/
 
 ImageDisplayModule::ImageDisplayModule(QWidget* parent) : QLabel(parent),
                                                           channel(RGB)
