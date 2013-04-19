@@ -60,8 +60,6 @@ Man::Man(boost::shared_ptr<AL::ALBroker> broker, const std::string &name)
     sensorsThread.addModule(jointEnactor);
     sensorsThread.addModule(motion);
 
-    sensors.printInput.wireTo(&guardian.printJointsOutput, true);
-
     motion.jointsInput_.wireTo(&sensors.jointsOutput_);
     motion.inertialsInput_.wireTo(&sensors.inertialsOutput_);
     motion.fsrInput_.wireTo(&sensors.fsrOutput_);
@@ -179,8 +177,12 @@ Man::Man(boost::shared_ptr<AL::ALBroker> broker, const std::string &name)
     cognitionThread.log<messages::RobotLocation>(&localization.output, "location");
 #endif
 
-#ifdef LOG_LOCATION
-    cognitionThread.log<messages::RobotLocation>(&localization.particleOutput, "particleSwarm");
+#ifdef LOG_OBSERVATIONS
+    cognitionThread.log<messages::VisionField>(&vision.vision_field, "observations");
+#endif
+
+#ifdef LOG_LOCALIZATION
+    cognitionThread.log<messages::ParticleSwarm>(&localization.particleOutput, "particleSwarm");
 #endif
 
 #ifdef LOG_IMAGES

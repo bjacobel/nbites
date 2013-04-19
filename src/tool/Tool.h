@@ -23,6 +23,8 @@
 
 #include "ParticleSwarm.pb.h"
 
+#include "ParticleSwarm.pb.h"
+
 namespace tool {
 
 class Tool : public QMainWindow {
