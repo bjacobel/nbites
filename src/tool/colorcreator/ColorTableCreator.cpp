@@ -1,9 +1,5 @@
 /**
  * @class ColorTableCreator
- *
- * Tool to define/calibrate a color table
- *
- * @author EJ Googins
  */
 
 #include "ColorTableCreator.h"
@@ -19,8 +15,8 @@ namespace color {
 ColorTableCreator::ColorTableCreator(QWidget *parent) :
     QWidget(parent),
     currentCamera(Camera::TOP),
-    topConverter(Camera::TOP),
-    bottomConverter(Camera::BOTTOM),
+    topConverter(),
+    bottomConverter(),
     topDisplay(this),
     bottomDisplay(this),
     thrDisplay(this),
@@ -28,6 +24,9 @@ ColorTableCreator::ColorTableCreator(QWidget *parent) :
     topImage(base())
 {
     // BACKEND
+    // We need converter modules to threshold both the top and bottom images,
+    // and ImageDisplayModule for each image, and a ThresholdedDisplayModule
+    // for whichever image is currently being workied on
     subdiagram.addModule(topConverter);
     subdiagram.addModule(bottomConverter);
     subdiagram.addModule(topDisplay);
@@ -83,6 +82,10 @@ ColorTableCreator::ColorTableCreator(QWidget *parent) :
     connect(loadBtn, SIGNAL(clicked()), this, SLOT(loadColorTable()));
     rightLayout->addWidget(loadBtn);
 
+    QPushButton* saveAsBtn = new QPushButton("Save as", this);
+    rightLayout->addWidget(saveAsBtn);
+    connect(saveAsBtn, SIGNAL(clicked()), this, SLOT(saveColorTableAs()));
+
     QPushButton* saveBtn = new QPushButton("Save", this);
     rightLayout->addWidget(saveBtn);
     connect(saveBtn, SIGNAL(clicked()), this, SLOT(saveColorTable()));
@@ -99,7 +102,7 @@ ColorTableCreator::ColorTableCreator(QWidget *parent) :
 }
 
 // Note: serizalization done by Qt
-void ColorTableCreator::loadLatestTable() 
+void ColorTableCreator::loadLatestTable()
 {
     if (imageTabs->currentIndex() == 0) {
         QFile file("../../data/tables/latestTopTable.dat");
@@ -139,6 +142,8 @@ void ColorTableCreator::serializeTableName(QString latestTableName)
     }
 }
 
+// This gets called every time the logs are advanced, ie every time the
+// "forward" button is pressed in the main tool
 void ColorTableCreator::run_()
 {
     bottomImageIn.latch();
@@ -166,7 +171,7 @@ void ColorTableCreator::loadColorTable()
     updateThresholdedImage();
 }
 
-void ColorTableCreator::saveColorTable()
+void ColorTableCreator::saveColorTableAs()
 {
     QString base_directory = QString(NBITES_DIR) + "/data/tables";
     QString filename = QFileDialog::getSaveFileName(this,
@@ -179,10 +184,32 @@ void ColorTableCreator::saveColorTable()
     serializeTableName(filename);
 }
 
+void ColorTableCreator::saveColorTable()
+{
+    QString filename;
+    if (imageTabs->currentIndex() == 0) {
+        QFile file("../../data/tables/latestTopTable.dat");
+        file.open(QIODevice::ReadOnly);
+        QDataStream in(&file);
+        in >> filename;
+    }
+    else {
+        QFile file("../../data/tables/latestBottomTable.dat");
+        file.open(QIODevice::ReadOnly);
+        QDataStream in(&file);
+        in >> filename;
+    }
+    colorTable.write(filename.toStdString());
+    colorTableName->setText(filename);
+}
+
+// Updates the color tables for both image converters and runs all of the
+// submodules, creating an updated thresholded image
 void ColorTableCreator::updateThresholdedImage()
 {
-    topConverter.initTable(colorTable.getTable());
-    bottomConverter.initTable(colorTable.getTable());
+    topConverter.changeTable(colorTable.getTable());
+    bottomConverter.changeTable(colorTable.getTable());
+    // Run all of the modules that are kept in our subdiagram
     subdiagram.run();
     updateColorStats();
 }
@@ -200,7 +227,7 @@ void ColorTableCreator::canvasClicked(int x, int y, int brushSize, bool leftClic
     paintStroke(brushStroke);
 }
 
-void ColorTableCreator::undo() 
+void ColorTableCreator::undo()
 {
     if (brushStrokes.empty())
         return;
@@ -260,6 +287,7 @@ void ColorTableCreator::paintStroke(const BrushStroke& brushStroke)
 
 void ColorTableCreator::imageTabSwitched(int)
 {
+    // Rewire the thresholded display's inPortal to get the right thing
     if (imageTabs->currentWidget() == &topDisplay) {
         currentCamera = Camera::TOP;
         thrDisplay.imageIn.wireTo(&topConverter.thrImage);

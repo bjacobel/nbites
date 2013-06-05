@@ -47,14 +47,14 @@ GuardianModule::~GuardianModule()
 
 void GuardianModule::run_()
 {
-    PROF_ENTER(P_ROBOGUARDIAN);
-
     temperaturesInput.latch();
     chestButtonInput.latch();
     footBumperInput.latch();
     inertialInput.latch();
     fsrInput.latch();
     batteryInput.latch();
+
+    PROF_ENTER(P_GUARDIAN);
 
     countButtonPushes();
     checkFalling();
@@ -67,7 +67,8 @@ void GuardianModule::run_()
     processFootBumperPushes();
     checkAudio();
     frameCount++;
-    PROF_EXIT(P_ROBOGUARDIAN);
+
+    PROF_EXIT(P_GUARDIAN);
 }
 
 void GuardianModule::countButtonPushes()

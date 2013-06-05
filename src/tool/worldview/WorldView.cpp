@@ -90,10 +90,16 @@ void WorldView::run_()
 	//connection - multiple connections at once will crash the tool because of the
 	//pool size issue described above
 	if(currentlyWatchedBot!=lastWatchedBot){
-		commIn[lastWatchedBot]
+		// basically you just need to pause the thread and let the message pool clear out
+		// the longer you sleep for, the more times you can switch robots without
+		// the tool crashing. 0.5 sec gets you two changes, 1.5 gets you about 5
+		commThread.stop();
+		sleep(1.5);
+		commIn[currentlyWatchedBot].latch();
+		commThread.start();
+	} else {
+		commIn[currentlyWatchedBot].latch();
 	}
-
-	commIn[currentlyWatchedBot].latch();
 	fieldPainter->updateWithLocationMessage(commIn[currentlyWatchedBot].message());
 	updateStateDisplay(currentlyWatchedBot, commIn[currentlyWatchedBot].message());
 

@@ -16,6 +16,8 @@ Tool::Tool(const char* title) :
     selector(),
     logView(this),
     tableCreator(this),
+	colorCalibrate(this),
+    fieldView(this),
     toolTabs(new QTabWidget),
     toolbar(new QToolBar),
     nextButton(new QPushButton(tr(">"))),
@@ -51,6 +53,8 @@ Tool::Tool(const char* title) :
     toolTabs->addTab(&selector, tr("Data"));
     toolTabs->addTab(&logView, tr("Log View"));
     toolTabs->addTab(&tableCreator, tr("Color Creator"));
+	toolTabs->addTab(&colorCalibrate, tr("Color Calibrator"));
+    toolTabs->addTab(&fieldView, tr("FieldView"));
 	toolTabs->addTab(&worldView, tr("World Viewer"));
 
     this->setCentralWidget(toolTabs);
@@ -68,8 +72,6 @@ Tool::Tool(const char* title) :
         geometry = new QRect(75, 75, 1132, 958);
     }
     this->setGeometry(*geometry);
-
-	//diagram.addModule(worldView);
 }
 
 Tool::~Tool() {
@@ -85,6 +87,7 @@ Tool::~Tool() {
 
 void Tool::setUpModules()
 {
+    /** Color Table Creator Tab **/
     if (diagram.connectToUnlogger<messages::YUVImage>(tableCreator.topImageIn,
                                                       "top") &&
         diagram.connectToUnlogger<messages::YUVImage>(tableCreator.bottomImageIn,
@@ -97,6 +100,70 @@ void Tool::setUpModules()
         std::cout << "Right now you can't use the color table creator without"
                   << " two image logs." << std::endl;
     }
+
+    /** Color Calibrate Tab **/
+    if (diagram.connectToUnlogger<messages::YUVImage>(colorCalibrate.topImageIn,
+                                                      "top") &&
+        diagram.connectToUnlogger<messages::YUVImage>(colorCalibrate.bottomImageIn,
+                                                      "bottom"))
+    {
+        diagram.addModule(colorCalibrate);
+    }
+    else
+    {
+        std::cout << "Right now you can't use the color calibrator without"
+                  << " two image logs." << std::endl;
+    }
+
+
+    /** FieldViewer Tab **/
+    // Should add field view
+    bool shouldAddFieldView = false;
+    if(diagram.connectToUnlogger<messages::RobotLocation>(fieldView.locationIn,
+                                                          "location"))
+    {
+        fieldView.confirmLocationLogs(true);
+        shouldAddFieldView = true;
+    }
+    else
+    {
+        std::cout << "Warning: location wasn't logged in this file" << std::endl;
+    }
+    if(diagram.connectToUnlogger<messages::RobotLocation>(fieldView.odometryIn,
+                                                          "odometry"))
+    {
+        fieldView.confirmOdometryLogs(true);
+        shouldAddFieldView = true;
+    }
+    else
+    {
+        std::cout << "Warning: odometry wasn't logged in this file" << std::endl;
+    }
+
+    if(diagram.connectToUnlogger<messages::ParticleSwarm>(fieldView.particlesIn,
+                                                          "particleSwarm"))
+    {
+        fieldView.confirmParticleLogs(true);
+        shouldAddFieldView = true;
+    }
+    else
+    {
+        std::cout << "Warning: Particles were'nt logged in this file" << std::endl;
+    }
+    if(diagram.connectToUnlogger<messages::VisionField>(fieldView.observationsIn,
+                                                        "observations"))
+    {
+        fieldView.confirmObsvLogs(true);
+        shouldAddFieldView = true;
+    }
+    else
+    {
+        std::cout << "Warning: Observations were'nt logged in this file" << std::endl;
+    }
+    if(shouldAddFieldView)
+        diagram.addModule(fieldView);
+
+
 }
 
 // Keyboard control

@@ -1,10 +1,10 @@
-
 #ifndef _Profiler_h_DEFINED
 #define _Profiler_h_DEFINED
 
 #include <algorithm>
 #include <boost/shared_ptr.hpp>
 #include "Common.h"
+#include "DebugConfig.h"
 class Profiler;
 
 #ifdef USE_TIME_PROFILING
@@ -18,16 +18,16 @@ class Profiler;
 #endif
 
 enum ProfiledComponent {
-    P_MAIN = 0,
-    P_GETIMAGE,
-    P_DQBUF,
+    // COGNITION THREAD
+    P_COGNITION_THREAD = 0,
+
+    P_TOP_DQBUF,
+    P_BOT_DQBUF,
     P_ACQUIRE_IMAGE,
-    P_QBUF,
 
     P_VISION,
     P_TRANSFORM,
     P_THRESHRUNS,
-    P_THRESHOLD,
     P_FGHORIZON,
     P_RUNS,
     P_OBJECT,
@@ -51,41 +51,40 @@ enum ProfiledComponent {
     P_FIT_UNUSED,
     P_INTERSECT_LINES,
 
-    P_MEMORY_VISION,
-    P_MEMORY_VISION_SENSORS,
-    P_MEMORY_MOTION_SENSORS,
-    P_MEMORY_IMAGE,
+    P_SELF_LOC,
+    P_BALL_TRACK,
 
-    P_LOC,
-    P_MCL,
-    P_LOGGING,
-
+    P_BEHAVIORS,
     P_PYTHON,
-    P_PYUPDATE,
-    P_PYRUN,
 
     P_LIGHTS,
 
-    P_DCM,
+    // MOTION THREAD
+    P_MOTION_THREAD,
+
+    P_JOINT_ENACTOR,
     P_PRE_PROCESS,
     P_SEND_JOINTS,
     P_SEND_HARDNESS,
-    P_POST_PROCESS,
 
-    P_SWITCHBOARD,
+    P_MOTION,
     P_SCRIPTED,
     P_CHOPPED,
     P_WALK,
-    P_TICKLEGS,
     P_HEAD,
-    P_ENACTOR,
 
-    P_COMM,
-    P_TOOLCONNECT,
-    P_ROBOGUARDIAN,
+    // COMM THREAD
+    P_COMM_THREAD,
+
+    // GUARDIAN THREAD
+    P_GUARDIAN_THREAD,
+
+    P_GUARDIAN,
+    P_AUDIO,
 
     P_TOTAL
 };
+
 static const int NUM_PCOMPONENTS = P_TOTAL + 1;
 
 class Profiler {

@@ -62,8 +62,10 @@ void WorldViewPainter::paintRobotLocation(QPaintEvent* event,
 	if(loc.ball_on()){
 		//draw where I think the ball is
 		painter.setBrush(Qt::darkYellow); //Orange isn't a thing??
-		painter.drawEllipse(loc.my_x()+loc.ball_dist()*std::cos(loc.my_h()+loc.ball_bearing()),
-							loc.my_y()+loc.ball_dist()*std::sin(loc.my_h()+loc.ball_bearing()),
+		painter.drawEllipse(loc.my_x()+loc.ball_dist()*std::cos(
+								(M_PI*(loc.my_h()+loc.ball_bearing())) / (float)180),
+							loc.my_y()+loc.ball_dist()*std::sin(
+								(M_PI*(loc.my_h()+loc.ball_bearing()))/ (float)180),
 							25,
 							25);
 

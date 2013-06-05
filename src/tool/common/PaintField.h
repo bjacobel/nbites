@@ -13,10 +13,10 @@
 #include <QtGui>
 #include <vector>
 
-#include "FieldConstants.h"
+#include "common/FieldConstants.h"
 
 namespace tool{
-namespace tool_common{
+namespace viewer{
 
 class PaintField : public QWidget
 {

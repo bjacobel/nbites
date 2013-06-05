@@ -24,7 +24,7 @@
 namespace tool {
 namespace worldview {
 
-class WorldViewPainter : public tool_common::PaintField
+class WorldViewPainter : public viewer::PaintField
 {
     Q_OBJECT;
 

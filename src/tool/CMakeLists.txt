@@ -19,11 +19,7 @@ if( BUILD_PROTOBUF )
   include( ${SHARE_DIR}/cmake/BuildProtobuf.cmake )
 endif()
 
-configure_file(
-  "${CMAKE_CURRENT_LIST_DIR}/PathConfig.in"
-  "${PROJECT_BINARY_DIR}/PathConfig.h"
-)
-
+include( ${SHARE_DIR}/cmake/DebugConfig.cmake)
 # Configure the debug options
 configure_file(
   "${SHARE_DIR}/cmake/DebugConfig.in"
@@ -31,10 +27,9 @@ configure_file(
 )
 
 configure_file(
-  "${MAN_DIR}/cmake/RobotConfig.in"
-  "${PROJECT_BINARY_DIR}/RobotConfig.h"
+  "${CMAKE_CURRENT_LIST_DIR}/PathConfig.in"
+  "${PROJECT_BINARY_DIR}/PathConfig.h"
 )
-
 include_directories( ${PROJECT_BINARY_DIR} )
 include_directories( ${CMAKE_SOURCE_DIR} )
 
@@ -78,6 +73,7 @@ add_subdirectory( unlog )
 add_subdirectory( logview )
 add_subdirectory( image )
 add_subdirectory( colorcreator )
+add_subdirectory( viewer )
 add_subdirectory( common )
 add_subdirectory( worldview )
 
@@ -113,6 +109,7 @@ target_link_libraries(
   image_display
   image # man image
   image_display
+  viewer
   worldview
   comm # man comm
   tool_common

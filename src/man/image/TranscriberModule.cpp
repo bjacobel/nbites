@@ -9,6 +9,10 @@
 #include <linux/version.h>
 #include <bn/i2c/i2c-dev.h>
 
+#include "Profiler.h"
+
+#define V4L2_MT9M114_FADE_TO_BLACK (V4L2_CID_PRIVATE_BASE)
+
 namespace man {
 namespace image {
 
@@ -198,27 +202,23 @@ void ImageTranscriber::initQueueAllBuffers() {
 void ImageTranscriber::initSettings()
 {
     // DO NOT SCREW UP THE ORDER BELOW
-
     setControlSetting(V4L2_CID_HFLIP, settings.hflip);
     setControlSetting(V4L2_CID_VFLIP, settings.vflip);
 
-    // Auto exposure on (buggy driver, blah)
+    // Still need to turn this on to change brightness, grumble grumble
     setControlSetting(V4L2_CID_EXPOSURE_AUTO, 1);
 
-    // Set most settings with auto exposure off
     setControlSetting(V4L2_CID_BRIGHTNESS, settings.brightness);
     setControlSetting(V4L2_CID_CONTRAST, settings.contrast);
     setControlSetting(V4L2_CID_SATURATION, settings.saturation);
     setControlSetting(V4L2_CID_HUE, settings.hue);
     setControlSetting(V4L2_CID_SHARPNESS, settings.sharpness);
 
-    // Auto white balance and backlight comp off!
+    // Auto white balance, exposure,  and backlight comp off!
     setControlSetting(V4L2_CID_AUTO_WHITE_BALANCE,
                       settings.auto_whitebalance);
     setControlSetting(V4L2_CID_BACKLIGHT_COMPENSATION,
                       settings.backlight_compensation);
-
-    // Auto exposure back off
     setControlSetting(V4L2_CID_EXPOSURE_AUTO, settings.auto_exposure);
 
     setControlSetting(V4L2_CID_EXPOSURE, settings.exposure);
@@ -226,6 +226,7 @@ void ImageTranscriber::initSettings()
 
     // This is actually just the white balance setting!
     setControlSetting(V4L2_CID_DO_WHITE_BALANCE, settings.white_balance);
+    setControlSetting(V4L2_MT9M114_FADE_TO_BLACK, settings.fade_to_black);
 }
 
 int ImageTranscriber::getControlSetting(unsigned int id) {
@@ -255,13 +256,13 @@ bool ImageTranscriber::setControlSetting(unsigned int id, int value) {
                 std::endl;
             return false;
         }
-	counter++;
-	if(counter > 10)
-	  {
+    counter++;
+    if(counter > 10)
+      {
           std::cerr << "CAMERA::Warning::Timeout while setting a parameter."
                     << std::endl;
-	    return false;
-	  }
+        return false;
+      }
     }
     return true;
 }
@@ -297,6 +298,8 @@ void ImageTranscriber::assertCameraSettings() {
     int gain = getControlSetting(V4L2_CID_GAIN);
     int exposure = getControlSetting(V4L2_CID_EXPOSURE);
     int whitebalance = getControlSetting(V4L2_CID_DO_WHITE_BALANCE);
+    int fade = getControlSetting(V4L2_MT9M114_FADE_TO_BLACK);
+
     //std::cerr << "Done checking driver settings" << std::endl;
 
     if (hflip != settings.hflip)
@@ -379,6 +382,14 @@ void ImageTranscriber::assertCameraSettings() {
                   << std::endl;
         allFine = false;
     }
+   if (fade != settings.fade_to_black)
+   {
+        std::cerr << "CAMERA::WARNING::Fade to black setting is wrong:"
+                  << std::endl;
+        std::cerr << " is " <<  fade << " not " << settings.fade_to_black
+                  << std::endl;
+        allFine = false;
+   }
 
     if (allFine) {
         std::cerr << "CAMERA::";
@@ -396,12 +407,32 @@ void ImageTranscriber::startCapturing() {
            "Start capture failed.");
 }
 
+// The heart of the transcriber, returns an image full of pixels from video mem
 messages::YUVImage ImageTranscriber::getNextImage()
 {
     // dequeue a frame buffer (this call blocks when there is
     // no new image available)
+    if(cameraType == Camera::TOP)
+    {
+        PROF_ENTER(P_TOP_DQBUF);
+    }
+    else
+    {
+        PROF_ENTER(P_BOT_DQBUF);
+    }
+
     verify(ioctl(fd, VIDIOC_DQBUF, &requestBuff),
            "Dequeueing the frame buffer failed.");
+
+    if(cameraType == Camera::TOP)
+    {
+        PROF_EXIT(P_TOP_DQBUF);
+    }
+    else
+    {
+        PROF_EXIT(P_BOT_DQBUF);
+    }
+
     if(requestBuff.bytesused != (unsigned int)SIZE)
         std::cerr << "CAMERA::ERROR::Wrong buffer size!" << std::endl;
 
@@ -411,6 +442,7 @@ messages::YUVImage ImageTranscriber::getNextImage()
         std::cerr << "CAMERA::Camera is working." << std::endl;
     }
 
+    // Pixels -> TranscriberBuffer -> YUVImage
     return messages::YUVImage(new TranscriberBuffer(mem[requestBuff.index],
                                                     fd,
                                                     requestBuff),
@@ -422,6 +454,7 @@ TranscriberModule::TranscriberModule(ImageTranscriber& trans)
 {
 }
 
+// Get image from Transcriber and outportal it
 void TranscriberModule::run_()
 {
     messages::YUVImage image = it.getNextImage();

@@ -73,7 +73,7 @@ class GoTeam:
         creates a play, picks the strategy to run, returns the play after
         it is modified by Strategies
         """
-        currentGCState = self.brain.interface.gameState.state
+        currentGCState = self.brain.player.gameState
         # We don't control anything in initial or finished
         if (currentGCState == 'gameInitial' or
             currentGCState == 'gameFinished'):
@@ -311,19 +311,19 @@ class GoTeam:
                 append(mate)
                 self.numActiveFieldPlayers += 1
 
-    def highestActivePlayerNumber(self):
+    def highestActivePlayerNumber(self, exceptNumbers = []):
         """returns the highest active player number"""
         highNumber = 0
         for mate in self.activeFieldPlayers:
-            if mate.playerNumber > highNumber:
+            if mate.playerNumber > highNumber and not mate.playerNumber in exceptNumbers:
                 highNumber = mate.playerNumber
         return highNumber
 
-    def lowestActivePlayerNumber(self):
+    def lowestActivePlayerNumber(self, exceptNumbers = []):
         """returns the lowest active player number"""
         lowNumber = 10
         for mate in self.activeFieldPlayers:
-            if mate.playerNumber < lowNumber:
+            if mate.playerNumber < lowNumber and not mate.playerNumber in exceptNumbers:
                 lowNumber = mate.playerNumber
         return lowNumber
 

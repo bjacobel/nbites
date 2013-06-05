@@ -1,8 +1,8 @@
 #pragma once
 
 #include <cmath>
-#include "RobotConfig.h"
 #include "Common.h"
+#include "DebugConfig.h"
 
 // Nao field constants
 

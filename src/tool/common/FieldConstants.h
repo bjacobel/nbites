@@ -1,10 +1,9 @@
 #pragma once
 
 #include <cmath>
+#include "Common.h"
 
 // Nao field constants
-
-//Define USING_LAB_FIELD if in the lab...
 
 #ifdef USING_LAB_FIELD
 static const float FIELD_WHITE_WIDTH = 500.f;

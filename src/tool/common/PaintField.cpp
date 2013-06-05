@@ -1,7 +1,7 @@
 #include "PaintField.h"
 
 namespace tool{
-namespace tool_common{
+namespace viewer{
 
 PaintField::PaintField(QWidget* parent, float scaleFactor_) :
     QWidget(parent),
@@ -31,7 +31,8 @@ void PaintField::paintEvent(QPaintEvent* event)
 {
 
     QPainter painter(this);
-	painter.translate(0, FIELD_GREEN_HEIGHT);
+    //Move origin to bottem left and scale to flip the y axis
+    painter.translate(0,FIELD_GREEN_HEIGHT);
     painter.scale(scaleFactor, -scaleFactor);
 
     // Field Areas

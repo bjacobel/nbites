@@ -2,6 +2,7 @@
 #include "NBMath.h"
 #include <math.h>
 #include "NBMath.h"
+#include "Profiler.h"
 
 #include "DebugConfig.h"
 
@@ -24,6 +25,8 @@ BallTrackModule::~BallTrackModule()
 
 void BallTrackModule::run_()
 {
+    PROF_ENTER(P_BALL_TRACK);
+
     // Latch
     visionBallInput.latch();
     odometryInput.latch();
@@ -93,6 +96,9 @@ void BallTrackModule::run_()
                   << " , " << filters->visRelY << std::endl;
     }
 
+    std::cout << "Speed:\t" << filters->getSpeed() << std::endl;
+    std::cout << "RelY Int Dest:\t" << filters->getRelYIntersectDest() << std::endl;
+
     std::cout << "Odometry is (x,y,h):\t( " << deltaOdometry.x() << " , "
               << deltaOdometry.y() << " , " << deltaOdometry.h() << " )" << std::endl;
 
@@ -108,6 +114,8 @@ void BallTrackModule::run_()
 
 
     ballLocationOutput.setMessage(ballMessage);
+
+    PROF_EXIT(P_BALL_TRACK);
 }
 
 } //namespace balltrack
