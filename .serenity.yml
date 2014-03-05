@@ -1,0 +1,58 @@
+# Syntax of this file closely follows that of Travis-CI's .travis.yml
+# (http://docs.travis-ci.com/user/build-configuration/) with one exception:
+# to test with all items in a list together, specify "all:""
+# to test each item in a list independently, specify "each:"
+# If there is only one item, it (obviously) doesn't matter so is not required.
+
+
+
+# Amazon machine images to test against (essentially Ubuntu versions)
+# http://cloud-images.ubuntu.com/locator/ec2/
+ami:
+  each:
+    - ami-a18c8fc8  # us-east i386 instance-store 12.04LTS
+    - ami-bb1516d2  # us-east i386 instance-store 13.10
+    - ami-71c5c618  # us-east i386 instance-store trusty-devel (will be 14.04LTS)
+
+
+# Environment variables
+env:
+  all:
+    - NBITES_DIR=/home/ubuntu/nbites
+    - AL_DIR=/home/ubuntu/nbites/lib
+
+
+before_install:
+  - apt-get update
+
+
+# Dependent packages to be installed
+install:
+  all:
+    - build-essential
+    - cmake
+    - ccache
+    - git-core
+    each:
+      - python2.7-dev
+      - python3.2-dev
+    - python-pyparsing
+    - libboost-dev
+    - libeigen3-dev
+
+
+# Useful for grabbing external libraries (naoqi, atom toolchain)
+before_test:
+  - wget -o http://robocup.bowdoin.edu/public/software/nao/NaoQi/1.14.3/naoqi-sdk-1.14.3-linux32.tar.gz
+  - wget -o http://robocup.bowdoin.edu/public/software/nao/NaoQi/1.14.3/nbites-atom-toolchain-1.14.3.tar.gz
+
+
+# Test scripts or commands
+test:
+  all:
+    - cd $NBITES_DIR/src/man && make straight && make test
+    - cd $NBITES_DIR/src/tool && make straight && make test
+
+
+after_script:
+  - shutdown -h now
