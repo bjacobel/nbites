@@ -1,0 +1,36 @@
+#!/usr/bin/env python
+import subprocess
+import argparse
+
+
+parser = argparse.ArgumentParser(description='Manage Nao wireless networks and daemons.')
+parser.add_argument('--reset', action='store_true', help="reset the Nao's wireless by re-installing connman")
+parser.add_argument('-r', '--robot', dest='robot', required=True, help="the robot to perform actions on")
+parser.add_argument('-n', '--network', dest='network', help="a network for the specified robot to join")
+args = parser.parse_args()
+
+try:
+    import fabric
+except:
+    print("NaoFi needs to install Fabric (and possibly Pip). You may be asked for sudo.")
+    subprocess.call(['sudo', 'apt-get', 'install', '-y', 'python-pip'], stdout=open(os.devnull,'wb'), stderr=subprocess.STDOUT)
+    subprocess.call(['sudo', 'pip', 'install', 'fabric'], stdout=open(os.devnull,'wb'), stderr=subprocess.STDOUT)
+    import fabric
+
+# do the importing of all the various fabric things here after we know we have it
+from fabric.api import env
+
+env.user = 'nao'
+env.hosts  = [args.robot]
+
+
+# Make sure we get both robot and robot.local in the hosts
+if args.robot[-6:] == ".local":
+    env.hosts.append(args.robot[:-6])
+else:
+    env.hosts.append(args.robot+".local")
+
+
+if args.reset:
+
+
